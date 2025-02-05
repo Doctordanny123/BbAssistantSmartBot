@@ -1,84 +1,72 @@
-# BbAssistantSmartBot - chat bot
-It is repository for chat bot: [@BbAssistantSmartBot](https://t.me/BbAssistantSmartBot)
+# Group Assistance Bot
 
-## What it is?
-This repository can be imported to [Bots.Business](https://bots.business) as a worked chat bot.
+## Description
 
-[Bots.Business](https://bots.business) - it is probably the first CBPaaS - Chat Bot Platform as a Service.
+The **Group Assistance Bot** is a powerful Telegram bot designed to manage group chats efficiently. It helps admins maintain control of the group by offering various moderation features, such as banning, unbanning, muting, unmuting users, issuing warnings, and more.
 
-A CBPaaS is a cloud-based platform that enables developers to create chatbots without needing to build backend infrastructure.
+This bot is intended for Telegram groups and is designed to be user-friendly, allowing admins to manage their groups effectively with simple commands.
 
-## Create your own bot for Telegram from this Git repo
+## Features
 
-How to create bot?
-1. Create bot with [@BotFather](https://telegram.me/BotFather) and take Secret Token
-2. Create bot in App and add Secret Token
-3. Add Public Key from App as [Deploy key](https://developer.github.com/v3/guides/managing-deploy-keys/#deploy-keys) with read access (and write access for bot exporting if you need it)
-4. Do import for this git repo
+- **User Management:**
+  - **Ban/Unban** users from the group.
+  - **Mute/Unmute** users, preventing or allowing them to send messages.
+  - **Warn** users for breaking group rules.
 
-Now you can talk with yours new Telegram Bot
+- **Group Info:**
+  - Displays the **group rules**.
+  - Sends a welcome message when new users join the group.
+  - Provides feedback when commands are successfully executed (e.g., user banned, user muted).
 
-See [more](https://help.bots.business/getting-started)
+- **Bot Commands:**
+  - `/start`: Displays the bot’s introduction and a list of available commands.
+  - `/rules`: Shows the group’s rules.
+  - `/ban [userId or reply]`: Ban a user from the group.
+  - `/unban [userId or reply]`: Unban a user from the group.
+  - `/mute [userId or reply]`: Mute a user in the group.
+  - `/unmute [userId or reply]`: Unmute a user in the group.
+  - `/warn [userId or reply]`: Issue a warning to a user.
+  - `/reload`: Refreshes the list of group admins (only available to admins).
+  - `/setup`: Initializes and sets up the bot for the group (admin-only command).
 
-## Commands - in commands folder
-File name - it is command name (Bot it can be rewritten in command description)
+## Setup Instructions
 
-Command can have: `name`, `help`, `aliases` (second names), `answer`, `keyboard`, `scnarios` (for simple logic) and other options.
+### 1. **Bot Setup**
+   - Create a Telegram bot by chatting with **@BotFather** on Telegram.
+   - Get your **API token** from **@BotFather**.
 
-### Command description
-It is file header:
+### 2. **Configure the Bot**
+   - Open the bot’s "@" command code and locate the `DEVELOPER_TG_ID` constant.
+   - Set the `DEVELOPER_TG_ID` to your Telegram user ID (the bot developer's ID).
 
-    /*CMD
-      command: /test
-      help: this is help for ccommand
-      need_reply: [ true or false here ]
-      auto_retry_time: [ time in sec ]
-      answer: it is example answer for /test command
-      keyboard: button1, button2
-      aliases: /test2, /test3
-    CMD*/
+     Example:
+     ```javascript
+     const DEVELOPER_TG_ID = 1234567890;  // Replace with your Telegram user ID
+     ```
 
-See [more](https://help.bots.business/commands)
+### 3. **Run the `/setup` Command**
+   - Before adding the bot to any group or testing it, the **bot developer** must first run the `/setup` command in a private chat with the bot.
+   - This step initializes the bot, configures settings, and prepares it for group integration.
+   - To do this, start a conversation with your bot and run the `/setup` command.
 
-### Command body
-It is command code in JavaScript.
-Use Bot Java Script for logic in command.
+### 4. **Add the Bot to Your Group**
+   - After running the `/setup` command, add the bot to your Telegram group and make it an **admin** with the necessary permissions (like banning, muting, etc.).
 
-For example:
-> Bot.sendMessage(2+2);
+### 5. **Customizing the Language File**
+   - The bot’s responses are customizable through the `LANG_EN` object, which contains all the messages for different actions (success, errors, warnings, etc.).
+   - You can update these messages to fit your group’s needs.
 
-See [more](https://help.bots.business/scenarios-and-bjs)
+### 6. **Bot Permissions**
+   - Ensure the bot has **admin permissions** to perform actions like banning, muting, and issuing warnings.
 
+### 7. **Testing the Bot**
+   - Once everything is set up, test the bot by issuing commands in the group chat.
+   - Ensure that admins have proper privileges and the bot responds with appropriate messages.
 
-## Libraries - in libs folder
-You can store common code in the libs folder. File name - it is library name.
+## Contributing
 
-For example code in myLib.js:
+Feel free to fork the repository and submit pull requests if you wish to add new features, fix bugs, or improve the documentation.
 
-    function hello(){ Bot.sendMessage("Hello from lib!") }
-    function goodbye(name){ Bot.sendMessage("Goodbye, " + name) }
+## License
 
-    publish({
-      sayHello: hello,
-      sayGoodbyeTo: goodbye
-    })
-
-then you can run in any bot's command:
-
-    Libs.myLib.hello()
-    Libs.myLib.sayGoodbyeTo("Alice")
-
-See [more](https://help.bots.business/git/library)
-
-## Other bots example
-See other bots examples in the [github](https://github.com/bots-business?utf8=✓&tab=repositories&q=&type=public&language=javascript) or in the [Bot Store](https://bots.business/)
-
-
-## Other help
-[Help.bots.business](https://help.bots.business)
-
-## API
-See [API](https://api.bots.business/docs#/docs/summary)
-
-
-![](https://bots.business/images/web-logo.png)
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
