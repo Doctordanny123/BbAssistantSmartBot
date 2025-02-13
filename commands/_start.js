@@ -1,20 +1,31 @@
 /*CMD
   command: /start
   help: 
-  need_reply: 
+  need_reply: false
   auto_retry_time: 
   folder: 
-  answer: 
-  keyboard: 
+
+  <<ANSWER
+
+  ANSWER
+
+  <<KEYBOARD
+
+  KEYBOARD
   aliases: 
   group: 
 CMD*/
 
-if (isGroupChat() && isGroupAdmin()) {
-  smartBot.add({ message: '#/errors/private_command_in_group' });
-  smartBot.run({ command: 'sendMessage' });
+if (options) {
+  var json = JSON.parse(options);
+  if (json.status === "administrator" || json.status === "creator") {
+    smartBot.run({ command: "/start" });
+  }
   return;
 }
 
-if (!isPrivate()) return;
-
+Api.getChatMember({
+  chat_id: chat.id,
+  user_id: user.telegramid,
+  on_result: "/start"
+});

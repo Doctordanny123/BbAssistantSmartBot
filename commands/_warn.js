@@ -1,45 +1,68 @@
 /*CMD
   command: /warn
   help: 
-  need_reply: 
+  need_reply: false
   auto_retry_time: 
   folder: 
-  answer: 
-  keyboard: 
+
+  <<ANSWER
+
+  ANSWER
+
+  <<KEYBOARD
+
+  KEYBOARD
   aliases: 
   group: 
 CMD*/
 
-if (!isGroupChat() || !isGroupAdmin()) return;
+if (options) {
+  var json = options.result;
 
-const userId = getUserIdFromGroup();
+  if (json.status !== "administrator" && json.status !== "creator") {
+    smartBot.run({ command: "adminOnly" });
+    return;
+  }
 
-if (!userId) {
-  smartBot.add({ message: '#/errors/userId' });
-  smartBot.run({ command: 'sendMessage' });
+  let userId = request?.reply_to_message?.from?.id;
+
+  if (!userId) {
+    smartBot.run({
+      command: "noUseridFound",
+      options: { type: "warn" }
+    });
+    return;
+  }
+
+  let warns = Libs.ResourcesLib.anotherUserRes("warn", userId);
+  warns.add(1);
+
+  if (warns.value() > 2) {
+    warns.set(0);
+
+    Api.restrictChatMember({
+      user_id: userId,
+      permissions: { can_send_messages: false },
+      until_date: Date.now() / 1000 + 7 * 24 * 60 * 60
+    });
+
+    smartBot.run({
+      command: "/action",
+      options: { userid: userId, type: "muted", reason: "Exceeded warning limit" }
+    });
+
+    return;
+  }
+
+  smartBot.run({
+    command: "/action",
+    options: { userid: userId, type: "warned", warns: warns.value() }
+  });
+
   return;
 }
 
-const maxWarnings = WARN_LIMIT;
-let allWarnings = Bot.getProp(WARNINGS_KEY, {});
-let userWarnings = allWarnings[userId] || 0;
-
-userWarnings += 1;
-allWarnings[userId] = userWarnings;
-
-smartBot.add({
-  userId,
-  userWarnings: userWarnings,
-  maxWarnings,
-  message: `#/success/warn`
+Api.getChatMember({
+  user_id: user.telegramid,
+  on_result: "/warn"
 });
-smartBot.run({ command: 'sendMessage' });
-
-if (userWarnings >= maxWarnings) {
-  smartBot.run({ command: `/mute ${userId}` });
-  delete allWarnings[userId];
-}
-
-Bot.setProp(WARNINGS_KEY, allWarnings, 'json');
-return;
-
