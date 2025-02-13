@@ -1,39 +1,57 @@
 /*CMD
   command: /mute
   help: 
-  need_reply: 
+  need_reply: false
   auto_retry_time: 
   folder: 
-  answer: 
-  keyboard: 
+
+  <<ANSWER
+
+  ANSWER
+
+  <<KEYBOARD
+
+  KEYBOARD
   aliases: 
   group: 
 CMD*/
 
-if (!isGroupChat() || !isGroupAdmin()) return;
+var message_id = request.message?.message_id;
 
-const userId = getUserIdFromGroup();
+if (options) {
+  var json = options.result;
 
-if (!userId) {
-  smartBot.add({ message: '#/errors/userId' });
-  smartBot.run({ command: 'sendMessage' });
+  if (json.status !== "administrator" && json.status !== "creator") {
+    smartBot.run({ command: "adminOnly" });
+    return;
+  }
+
+  let userId = request?.reply_to_message?.from?.id;
+
+  if (!userId) {
+    smartBot.run({
+      command: "noUseridFound",
+      options: {
+        type: "mute"
+      }
+    });
+    return;
+  }
+
+  Api.restrictChatMember({
+    user_id: userId,
+    permissions: { can_send_messages: false }
+  });
+
+  smartBot.run({
+    command: "/action",
+    options: { userid: userId, tyep: "Muted" }
+  });
+
   return;
 }
 
-Api.restrictChatMember({
-  chat_id: chat.chatid,
-  user_id: userId,
-  permissions: {
-    can_send_messages: false,
-    can_send_media_messages: false,
-    can_send_polls: false,
-    can_send_other_messages: false,
-    can_add_web_page_previews: false,
-  },
-  on_result: '/onApiRequest',
-  on_error: '/onApiRequest',
-  bb_options: { type: 'mute', userId }
+Api.getChatMember({
+  user_id: user.telegramid,
+  on_result: "/mute"
 });
-
-return;
-

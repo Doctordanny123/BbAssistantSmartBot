@@ -1,5 +1,5 @@
 /*CMD
-  command: /unmute
+  command: /unwarn
   help: 
   need_reply: false
   auto_retry_time: 
@@ -29,27 +29,20 @@ if (options) {
   if (!userId) {
     smartBot.run({
       command: "noUseridFound",
-      options: {
-        type: "unmute"
-      }
+      options: { type: "unwarn" }
     });
     return;
   }
 
-  Api.restrictChatMember({
-    user_id: userId,
-    permissions: { 
-      can_send_messages: true,
-      can_send_media_messages: true,
-      can_send_polls: true,
-      can_send_other_messages: true,
-      can_add_web_page_previews: true
-    }
-  });
+  let warns = Libs.ResourcesLib.anotherUserRes("warn", userId);
+  
+  if (warns.value() > 0) {
+    warns.remove(1);
+  }
 
   smartBot.run({
     command: "/action",
-    options: { userid: userId, type: "unmuted" }
+    options: { userid: userId, type: "unwarned", warns: warns.value() }
   });
 
   return;
@@ -57,5 +50,5 @@ if (options) {
 
 Api.getChatMember({
   user_id: user.telegramid,
-  on_result: "/unmute"
+  on_result: "/unwarn"
 });
