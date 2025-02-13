@@ -1,11 +1,17 @@
 /*CMD
   command: @@
   help: 
-  need_reply: 
+  need_reply: false
   auto_retry_time: 
-  folder: Smart Bot
-  answer: 
-  keyboard: 
+  folder: 
+
+  <<ANSWER
+
+  ANSWER
+
+  <<KEYBOARD
+
+  KEYBOARD
   aliases: 
   group: 
 CMD*/
